@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Products - FreshMart</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="images/logo.png">
+</head>
+<body>
+    <!-- Header (same as index.html) -->
+    <header>
+        <div class="header-top">
+            <div class="container">
+                <div class="logo">
+                    <img src="images/logo.png" alt="FreshMart">
+                    <span>FreshMart</span>
+                </div>
+                <div class="search-bar">
+                    <input type="text" placeholder="Search for products...">
+                    <button><i class="fas fa-search"></i></button>
+                </div>
+                <div class="user-actions">
+                    <a href="#"><i class="fas fa-user"></i> Login</a>
+                    <a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart (<span id="cart-count">0</span>)</a>
+                </div>
+            </div>
+        </div>
+        <nav>
+            <div class="container">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html" class="active">All Products</a></li>
+                    <li><a href="#">Fruits & Vegetables</a></li>
+                    <li><a href="#">Dairy & Eggs</a></li>
+                    <li><a href="#">Beverages</a></li>
+                    <li><a href="#">Snacks</a></li>
+                    <li><a href="#">Offers</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Products Section -->
+    <section class="products-page">
+        <div class="container">
+            <div class="page-header">
+                <h1>All Products</h1>
+                <div class="sort-filter">
+                    <select id="sort-by">
+                        <option value="default">Sort by</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="name-asc">Name: A-Z</option>
+                        <option value="name-desc">Name: Z-A</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="filter-products">
+                <div class="sidebar">
+                    <h3>Categories</h3>
+                    <ul class="category-filter">
+                        <li><a href="#" class="active">All Categories</a></li>
+                        <li><a href="#">Fruits & Vegetables</a></li>
+                        <li><a href="#">Dairy & Eggs</a></li>
+                        <li><a href="#">Beverages</a></li>
+                        <li><a href="#">Snacks</a></li>
+                        <li><a href="#">Meat & Fish</a></li>
+                    </ul>
+                    
+                    <h3>Price Range</h3>
+                    <div class="price-filter">
+                        <input type="range" id="price-range" min="0" max="100" value="100">
+                        <div class="price-values">
+                            <span>$0</span>
+                            <span>$100</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="product-list">
+                    <div class="product-grid" id="all-products">
+                        <!-- Products will be loaded via JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer (same as index.html) -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3>FreshMart</h3>
+                    <p>Your one-stop shop for all grocery needs. Quality products at affordable prices.</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="products.html">Products</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Customer Service</h3>
+                    <ul>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Shipping Policy</a></li>
+                        <li><a href="#">Return Policy</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-envelope"></i> info@freshmart.com</p>
+                    <p><i class="fas fa-phone"></i> +123 456 7890</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 FreshMart. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/products.js"></script>
+</body>
+</html>
