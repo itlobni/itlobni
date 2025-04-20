@@ -257,3 +257,78 @@ document.head.appendChild(style);
 
 // Initialize check for logged in user
 checkLoggedIn();
+/* Auth Dropdown Styles */
+.auth-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.auth-toggle {
+    background: none;
+    border: none;
+    color: var(--dark-color);
+    cursor: pointer;
+    font-size: inherit;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.auth-toggle:hover {
+    color: var(--primary-color);
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: var(--white-color);
+    min-width: 280px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1000;
+    padding: 20px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.auth-dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.auth-form h3 {
+    margin-bottom: 10px;
+    color: var(--primary-color);
+    text-align: center;
+}
+
+.auth-form input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.btn-small {
+    padding: 8px 15px;
+    font-size: 14px;
+}
+
+.auth-switch {
+    text-align: center;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.auth-switch a {
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+/* Verification Modal (keep existing modal styles) */
