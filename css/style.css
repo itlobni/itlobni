@@ -987,3 +987,11 @@ input:invalid + .error-message {
 }
 
 /* Verification Modal (keep existing modal styles) */
+.welcome-message {
+    background: var(--accent-color);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
