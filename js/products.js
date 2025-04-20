@@ -177,3 +177,19 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+// At the end of products.js
+function personalizeContent() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (currentUser) {
+        const welcomeMsg = document.createElement('div');
+        welcomeMsg.className = 'welcome-message';
+        welcomeMsg.innerHTML = `Welcome back, <strong>${currentUser.name}</strong>!`;
+        document.querySelector('.page-header')?.prepend(welcomeMsg);
+    }
+}
+
+// Add to DOMContentLoaded event
+document.addEventListener('DOMContentLoaded', function() {
+    // ... existing code ...
+    personalizeContent();
+});
