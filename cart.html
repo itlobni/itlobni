@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart - FreshMart</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="images/logo.png">
+</head>
+<body>
+    <!-- Header (same as index.html) -->
+    <header>
+        <div class="header-top">
+            <div class="container">
+                <div class="logo">
+                    <img src="images/logo.png" alt="FreshMart">
+                    <span>FreshMart</span>
+                </div>
+                <div class="search-bar">
+                    <input type="text" placeholder="Search for products...">
+                    <button><i class="fas fa-search"></i></button>
+                </div>
+                <div class="user-actions">
+                    <a href="#"><i class="fas fa-user"></i> Login</a>
+                    <a href="cart.html" class="active"><i class="fas fa-shopping-cart"></i> Cart (<span id="cart-count">0</span>)</a>
+                </div>
+            </div>
+        </div>
+        <nav>
+            <div class="container">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html">All Products</a></li>
+                    <li><a href="#">Fruits & Vegetables</a></li>
+                    <li><a href="#">Dairy & Eggs</a></li>
+                    <li><a href="#">Beverages</a></li>
+                    <li><a href="#">Snacks</a></li>
+                    <li><a href="#">Offers</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Cart Section -->
+    <section class="cart-page">
+        <div class="container">
+            <h1>Your Shopping Cart</h1>
+            
+            <div class="cart-container">
+                <div class="cart-items" id="cart-items">
+                    <!-- Cart items will be loaded via JavaScript -->
+                    <div class="empty-cart">
+                        <i class="fas fa-shopping-cart"></i>
+                        <p>Your cart is empty</p>
+                        <a href="products.html" class="btn">Continue Shopping</a>
+                    </div>
+                </div>
+                
+                <div class="cart-summary">
+                    <h3>Order Summary</h3>
+                    <div class="summary-details">
+                        <div class="summary-row">
+                            <span>Subtotal</span>
+                            <span id="subtotal">$0.00</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Delivery</span>
+                            <span>$5.00</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total</span>
+                            <span id="total">$5.00</span>
+                        </div>
+                    </div>
+                    <a href="checkout.html" class="btn checkout-btn">Proceed to Checkout</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer (same as index.html) -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3>FreshMart</h3>
+                    <p>Your one-stop shop for all grocery needs. Quality products at affordable prices.</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="products.html">Products</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Customer Service</h3>
+                    <ul>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Shipping Policy</a></li>
+                        <li><a href="#">Return Policy</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-envelope"></i> info@freshmart.com</p>
+                    <p><i class="fas fa-phone"></i> +123 456 7890</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 FreshMart. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/cart.js"></script>
+</body>
+</html>
