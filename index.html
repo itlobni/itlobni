@@ -7,6 +7,42 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" href="images/logo.png">
+    <style>
+        /* Add these new styles to your existing style.css or keep them here */
+        .auth-form .form-group {
+            margin-bottom: 15px;
+        }
+        #verification-status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+        .status-success {
+            background-color: #dff0d8;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
+        }
+        .status-error {
+            background-color: #f2dede;
+            color: #a94442;
+            border: 1px solid #ebccd1;
+        }
+        .status-loading {
+            color: #31708f;
+            background-color: #d9edf7;
+            border: 1px solid #bce8f1;
+        }
+        #resend-code {
+            background: none;
+            border: none;
+            color: #0066cc;
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -21,46 +57,47 @@
                     <input type="text" placeholder="Search for products...">
                     <button><i class="fas fa-search"></i></button>
                 </div>
-<div class="user-actions">
-    <div class="auth-dropdown">
-        <button class="auth-toggle">
-            <i class="fas fa-user"></i>
-            <span id="auth-status">Login/Signup</span>
-        </button>
-        <div class="dropdown-content">
-            <form id="login-form" class="auth-form">
-                <h3>Login</h3>
-                <div class="form-group">
-                    <input type="email" id="login-email" placeholder="Email" required>
-                </div>
-                <div class="form-group">
-                    <input type="password" id="login-password" placeholder="Password" required>
-                </div>
-                <button type="submit" class="btn btn-small">Login</button>
-                <p class="auth-switch">Don't have an account? <a href="#" id="show-signup">Sign up</a></p>
-            </form>
+                <div class="user-actions">
+                    <div class="auth-dropdown">
+                        <button class="auth-toggle">
+                            <i class="fas fa-user"></i>
+                            <span id="auth-status">Login/Signup</span>
+                        </button>
+                        <div class="dropdown-content">
+                            <form id="login-form" class="auth-form">
+                                <h3>Login</h3>
+                                <div class="form-group">
+                                    <input type="email" id="login-email" placeholder="Email" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" id="login-password" placeholder="Password" required>
+                                </div>
+                                <button type="submit" class="btn btn-small">Login</button>
+                                <p class="auth-switch">Don't have an account? <a href="#" id="show-signup">Sign up</a></p>
+                            </form>
 
-            <form id="signup-form" class="auth-form" style="display:none;">
-                <h3>Sign Up</h3>
-                <div class="form-group">
-                    <input type="text" id="signup-name" placeholder="Full Name" required>
+                            <form id="signup-form" class="auth-form" style="display:none;">
+                                <h3>Sign Up</h3>
+                                <div class="form-group">
+                                    <input type="text" id="signup-name" placeholder="Full Name" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="email" id="signup-email" placeholder="Email" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="tel" id="signup-phone" placeholder="Phone Number" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" id="signup-password" placeholder="Password" required minlength="6">
+                                </div>
+                                <button type="submit" class="btn btn-small" id="signup-submit">Sign Up</button>
+                                <p class="auth-switch">Already have an account? <a href="#" id="show-login">Login</a></p>
+                                <div id="verification-status"></div>
+                            </form>
+                        </div>
+                    </div>
+                    <a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart (<span id="cart-count">0</span>)</a>
                 </div>
-                <div class="form-group">
-                    <input type="email" id="signup-email" placeholder="Email" required>
-                </div>
-                <div class="form-group">
-                    <input type="tel" id="signup-phone" placeholder="Phone Number" required>
-                </div>
-                <div class="form-group">
-                    <input type="password" id="signup-password" placeholder="Password" required minlength="6">
-                </div>
-                <button type="submit" class="btn btn-small">Sign Up</button>
-                <p class="auth-switch">Already have an account? <a href="#" id="show-login">Login</a></p>
-            </form>
-        </div>
-    </div>
-    <a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart (<span id="cart-count">0</span>)</a>
-</div>
             </div>
         </div>
         <nav>
@@ -170,49 +207,204 @@
         </div>
     </footer>
 
+    <!-- Verification Modal -->
+    <div class="modal" id="verification-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Verify Your Account</h2>
+            <p>We've sent a 6-digit verification code to your email address.</p>
+            <form id="verification-form">
+                <div class="form-group">
+                    <input type="text" id="verification-code" placeholder="Enter 6-digit code" required maxlength="6" pattern="\d{6}">
+                </div>
+                <button type="submit" class="btn">Verify Account</button>
+                <button type="button" id="resend-code">Resend Code</button>
+            </form>
+            <div id="modal-status" style="margin-top: 15px;"></div>
+        </div>
+    </div>
+
     <script src="js/main.js"></script>
     <script src="js/products.js"></script>
-<!-- Signup Modal -->
-<div class="modal" id="signup-modal">
-    <div class="modal-content">
-        <span class="close-modal">&times;</span>
-        <h2>Create Your Account</h2>
-        <form id="signup-form">
-            <div class="form-group">
-                <label for="signup-name">Full Name</label>
-                <input type="text" id="signup-name" required>
-            </div>
-            <div class="form-group">
-                <label for="signup-email">Email</label>
-                <input type="email" id="signup-email" required>
-            </div>
-            <div class="form-group">
-                <label for="signup-phone">Phone Number</label>
-                <input type="tel" id="signup-phone" required>
-            </div>
-            <div class="form-group">
-                <label for="signup-password">Password</label>
-                <input type="password" id="signup-password" required minlength="6">
-            </div>
-            <button type="submit" class="btn">Sign Up</button>
-        </form>
-    </div>
-</div>
+    <!-- Add these scripts before closing body tag -->
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        // Initialize EmailJS with your user ID
+        (function() {
+            emailjs.init('user_j3r9dle'); // Your EmailJS user ID
+        })();
 
-<!-- Verification Modal -->
-<div class="modal" id="verification-modal">
-    <div class="modal-content">
-        <span class="close-modal">&times;</span>
-        <h2>Verify Your Account</h2>
-        <p>We've sent a 6-digit code to your email and phone</p>
-        <form id="verification-form">
-            <div class="form-group">
-                <label for="verification-code">Verification Code</label>
-                <input type="text" id="verification-code" required maxlength="6" pattern="\d{6}">
-            </div>
-            <button type="submit" class="btn">Verify Account</button>
-        </form>
-    </div>
-</div>
+        // DOM elements
+        const signupForm = document.getElementById('signup-form');
+        const verificationModal = document.getElementById('verification-modal');
+        const verificationForm = document.getElementById('verification-form');
+        const closeModal = document.querySelector('.close-modal');
+        const resendCodeBtn = document.getElementById('resend-code');
+        const statusMessage = document.getElementById('verification-status');
+        const modalStatus = document.getElementById('modal-status');
+
+        // Show verification modal
+        function showVerificationModal() {
+            verificationModal.style.display = 'block';
+        }
+
+        // Close verification modal
+        closeModal.addEventListener('click', function() {
+            verificationModal.style.display = 'none';
+        });
+
+        // Signup form submission
+        signupForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('signup-submit');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            showStatus('Sending verification email...', 'status-loading');
+            
+            const formData = {
+                name: document.getElementById('signup-name').value,
+                email: document.getElementById('signup-email').value,
+                phone: document.getElementById('signup-phone').value,
+                password: document.getElementById('signup-password').value
+            };
+            
+            // Generate a random 6-digit code
+            const verificationCode = Math.floor(100000 + Math.random() * 900000);
+            
+            // Store the data temporarily
+            localStorage.setItem('tempUserData', JSON.stringify({
+                ...formData,
+                verificationCode,
+                timestamp: Date.now()
+            }));
+            
+            try {
+                // Send verification email using EmailJS
+                await emailjs.send('service_j3r9dle', 'template_default', {
+                    to_email: formData.email,
+                    verification_code: verificationCode,
+                    user_name: formData.name,
+                    from_name: "FreshMart Team"
+                });
+                
+                showStatus('Verification email sent! Please check your inbox.', 'status-success');
+                showVerificationModal();
+            } catch (error) {
+                showStatus('Error sending email: ' + error.message, 'status-error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Sign Up';
+            }
+        });
+
+        // Verification form submission
+        verificationForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const enteredCode = document.getElementById('verification-code').value;
+            const storedData = JSON.parse(localStorage.getItem('tempUserData'));
+            
+            if (!storedData) {
+                showModalStatus('Session expired. Please sign up again.', 'error');
+                return;
+            }
+            
+            // Check if code is expired (10 minutes)
+            if (Date.now() - storedData.timestamp > 600000) {
+                showModalStatus('Verification code has expired. Please request a new one.', 'error');
+                return;
+            }
+            
+            if (enteredCode == storedData.verificationCode) {
+                // Submit final data to Formspree
+                showModalStatus('Verifying your account...', 'loading');
+                
+                axios.post('https://formspree.io/f/mdkgngpz', {
+                    name: storedData.name,
+                    email: storedData.email,
+                    phone: storedData.phone,
+                    _subject: 'New FreshMart User Signup',
+                    _replyto: storedData.email
+                })
+                .then(response => {
+                    showModalStatus('Verification successful! Account created.', 'success');
+                    localStorage.removeItem('tempUserData');
+                    
+                    // Close modal and update UI
+                    setTimeout(() => {
+                        verificationModal.style.display = 'none';
+                        document.getElementById('auth-status').textContent = storedData.name;
+                        // Here you would typically log the user in or redirect
+                    }, 2000);
+                })
+                .catch(error => {
+                    showModalStatus('Error saving data: ' + error.message, 'error');
+                });
+            } else {
+                showModalStatus('Invalid verification code. Please try again.', 'error');
+            }
+        });
+
+        // Resend verification code
+        resendCodeBtn.addEventListener('click', async function() {
+            const storedData = JSON.parse(localStorage.getItem('tempUserData'));
+            
+            if (!storedData) {
+                showModalStatus('No signup data found. Please fill out the form again.', 'error');
+                return;
+            }
+            
+            showModalStatus('Sending new verification code...', 'loading');
+            resendCodeBtn.disabled = true;
+            
+            try {
+                // Generate new code
+                const newCode = Math.floor(100000 + Math.random() * 900000);
+                
+                // Update stored data
+                localStorage.setItem('tempUserData', JSON.stringify({
+                    ...storedData,
+                    verificationCode: newCode,
+                    timestamp: Date.now()
+                }));
+                
+                // Resend email
+                await emailjs.send('service_j3r9dle', 'template_default', {
+                    to_email: storedData.email,
+                    verification_code: newCode,
+                    user_name: storedData.name,
+                    from_name: "FreshMart Team"
+                });
+                
+                showModalStatus('New verification code sent!', 'success');
+                resendCodeBtn.disabled = false;
+            } catch (error) {
+                showModalStatus('Error resending code: ' + error.message, 'error');
+                resendCodeBtn.disabled = false;
+            }
+        });
+
+        // Helper functions
+        function showStatus(message, type) {
+            statusMessage.textContent = message;
+            statusMessage.className = type;
+            statusMessage.style.display = 'block';
+        }
+
+        function showModalStatus(message, type) {
+            modalStatus.textContent = message;
+            modalStatus.className = type;
+            modalStatus.style.display = 'block';
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target === verificationModal) {
+                verificationModal.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>
