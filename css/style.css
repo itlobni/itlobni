@@ -995,3 +995,25 @@ input:invalid + .error-message {
     margin-bottom: 15px;
     font-size: 16px;
 }
+/* Password Reset Modal Styles */
+#password-reset-modal .modal-content {
+    max-width: 400px;
+}
+
+#reset-status {
+    padding: 10px;
+    border-radius: 4px;
+    display: none;
+}
+
+#reset-status.success {
+    background-color: #dff0d8;
+    color: #3c763d;
+    border: 1px solid #d6e9c6;
+}
+
+#reset-status.error {
+    background-color: #f2dede;
+    color: #a94442;
+    border: 1px solid #ebccd1;
+}
