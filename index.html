@@ -329,351 +329,136 @@
     <script>
         // Initialize EmailJS with your user ID
         (function() {
-            emailjs.init('user_j3r9dle'); // Your EmailJS user ID
+            emailjs.init('user_j3r9dle');
+            console.log("EmailJS initialized successfully");
         })();
-        // Add this right after your initialization to test EmailJS connection
-emailjs.send("service_j3r9dle", "template_default", {
-    to_email: "your-test-email@example.com",
-    message: "Test connection"
-})
-.then(response => console.log("EmailJS test succeeded!", response))
-.catch(error => console.error("EmailJS test failed:", error));
 
-        // DOM elements
-        const signupForm = document.getElementById('signup-form');
-        const loginForm = document.getElementById('login-form');
-        const verificationModal = document.getElementById('verification-modal');
-        const verificationForm = document.getElementById('verification-form');
-        const closeModals = document.querySelectorAll('.close-modal');
-        const resendCodeBtn = document.getElementById('resend-code');
-        const statusMessage = document.getElementById('verification-status');
-        const modalStatus = document.getElementById('modal-status');
-        const showSignupLink = document.getElementById('show-signup');
-        const showLoginLink = document.getElementById('show-login');
-        const forgotPasswordLink = document.getElementById('forgot-password');
-        const passwordResetModal = document.getElementById('password-reset-modal');
-
-        // Toggle between login and signup forms
-        showSignupLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            document.getElementById('login-form').style.display = 'none';
-            document.getElementById('signup-form').style.display = 'block';
-        });
-
-        showLoginLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            document.getElementById('signup-form').style.display = 'none';
-            document.getElementById('login-form').style.display = 'block';
-        });
-
-        // Show verification modal
-        function showVerificationModal() {
-            verificationModal.style.display = 'block';
-        }
-
-        // Close modals
-        closeModals.forEach(btn => {
-            btn.addEventListener('click', function() {
-                this.closest('.modal').style.display = 'none';
-            });
-        });
-
-        // Signup form submission
-        signupForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
+        // Password Reset Module
+        const passwordReset = {
+            init() {
+                this.code = null;
+                this.email = null;
+                this.serviceID = "service_j3r9dle";
+                this.templateID = "template_default";
+                this.setupEventListeners();
+            },
             
-            const submitBtn = document.getElementById('signup-submit');
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Sending...';
-            showStatus('Sending verification email...', 'status-loading');
-            
-            const formData = {
-                name: document.getElementById('signup-name').value,
-                email: document.getElementById('signup-email').value,
-                phone: document.getElementById('signup-phone').value,
-                password: document.getElementById('signup-password').value
-            };
-            
-            // Generate a random 6-digit code
-            const verificationCode = Math.floor(100000 + Math.random() * 900000);
-            
-            // Store the data temporarily
-            localStorage.setItem('tempUserData', JSON.stringify({
-                ...formData,
-                verificationCode,
-                timestamp: Date.now()
-            }));
-            
-            try {
-                // Send verification email using EmailJS
-                await emailjs.send('service_j3r9dle', 'template_default', {
-                    to_email: formData.email,
-                    verification_code: verificationCode,
-                    user_name: formData.name,
-                    from_name: "FreshMart Team"
+            setupEventListeners() {
+                // Forgot password link
+                document.getElementById('forgot-password').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    document.getElementById('password-reset-modal').style.display = 'block';
                 });
                 
-                showStatus('Verification email sent! Please check your inbox.', 'status-success');
-                showVerificationModal();
-            } catch (error) {
-                showStatus('Error sending email: ' + error.message, 'status-error');
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Sign Up';
-            }
-        });
-
-        // Verification form submission
-        verificationForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const enteredCode = document.getElementById('verification-code').value;
-            const storedData = JSON.parse(localStorage.getItem('tempUserData'));
-            
-            if (!storedData) {
-                showModalStatus('Session expired. Please sign up again.', 'error');
-                return;
-            }
-            
-            // Check if code is expired (10 minutes)
-            if (Date.now() - storedData.timestamp > 600000) {
-                showModalStatus('Verification code has expired. Please request a new one.', 'error');
-                return;
-            }
-            
-            if (enteredCode == storedData.verificationCode) {
-                // Submit final data to Formspree
-                showModalStatus('Verifying your account...', 'loading');
-                
-                axios.post('https://formspree.io/f/mdkgngpz', {
-                    name: storedData.name,
-                    email: storedData.email,
-                    phone: storedData.phone,
-                    _subject: 'New FreshMart User Signup',
-                    _replyto: storedData.email
-                })
-                .then(response => {
-                    showModalStatus('Verification successful! Account created.', 'success');
-                    localStorage.removeItem('tempUserData');
+                // Reset request form
+                document.getElementById('reset-request-form').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const btn = e.target.querySelector('button[type="submit"]');
                     
-                    // Close modal and update UI
-                    setTimeout(() => {
-                        verificationModal.style.display = 'none';
-                        document.getElementById('auth-status').textContent = storedData.name;
-                        // Here you would typically log the user in or redirect
-                    }, 2000);
-                })
-                .catch(error => {
-                    showModalStatus('Error saving data: ' + error.message, 'error');
-                });
-            } else {
-                showModalStatus('Invalid verification code. Please try again.', 'error');
-            }
-        });
-
-        // Resend verification code
-        resendCodeBtn.addEventListener('click', async function() {
-            const storedData = JSON.parse(localStorage.getItem('tempUserData'));
-            
-            if (!storedData) {
-                showModalStatus('No signup data found. Please fill out the form again.', 'error');
-                return;
-            }
-            
-            showModalStatus('Sending new verification code...', 'loading');
-            resendCodeBtn.disabled = true;
-            
-            try {
-                // Generate new code
-                const newCode = Math.floor(100000 + Math.random() * 900000);
-                
-                // Update stored data
-                localStorage.setItem('tempUserData', JSON.stringify({
-                    ...storedData,
-                    verificationCode: newCode,
-                    timestamp: Date.now()
-                }));
-                
-                // Resend email
-                await emailjs.send('service_j3r9dle', 'template_default', {
-                    to_email: storedData.email,
-                    verification_code: newCode,
-                    user_name: storedData.name,
-                    from_name: "FreshMart Team"
+                    try {
+                        btn.disabled = true;
+                        btn.textContent = 'Sending...';
+                        this.email = document.getElementById('reset-email').value;
+                        this.code = Math.floor(100000 + Math.random() * 900000);
+                        
+                        await emailjs.send(this.serviceID, this.templateID, {
+                            to_email: this.email,
+                            verification_code: this.code,
+                            subject: "Password Reset Verification",
+                            body: `Your verification code is: ${this.code}`
+                        });
+                        
+                        document.getElementById('reset-step1').style.display = 'none';
+                        document.getElementById('reset-step2').style.display = 'block';
+                        this.showStatus('Verification code sent! Check your email.', 'status-success');
+                    } catch (error) {
+                        console.error("Email sending error:", error);
+                        this.showStatus(`Error: ${error.message}`, 'status-error');
+                    } finally {
+                        btn.disabled = false;
+                        btn.textContent = 'Send Code';
+                    }
                 });
                 
-                showModalStatus('New verification code sent!', 'success');
-                resendCodeBtn.disabled = false;
-            } catch (error) {
-                showModalStatus('Error resending code: ' + error.message, 'error');
-                resendCodeBtn.disabled = false;
-            }
-        });
-
-        // Password Reset Variables
-        // Password Reset - Complete Working Version
-const passwordReset = {
-    init() {
-        this.code = null;
-        this.email = null;
-        this.serviceID = "service_j3r9dle"; // Replace with yours
-        this.templateID = "template_default"; // Replace with yours
-        
-        document.getElementById('forgot-password').addEventListener('click', (e) => {
-            e.preventDefault();
-            document.getElementById('password-reset-modal').style.display = 'block';
-        });
-        
-        document.getElementById('reset-request-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('button[type="submit"]');
-            
-            try {
-                btn.disabled = true;
-                btn.textContent = 'Sending...';
-                this.email = document.getElementById('reset-email').value;
-                this.code = Math.floor(100000 + Math.random() * 900000);
-                
-                await emailjs.send(this.serviceID, this.templateID, {
-                    to_email: this.email,
-                    verification_code: this.code,
-                    subject: "Password Reset Verification",
-                    body: `Your verification code is: ${this.code}`
+                // Reset confirmation form
+                document.getElementById('reset-confirm-form').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const btn = e.target.querySelector('button[type="submit"]');
+                    const enteredCode = document.getElementById('reset-code').value;
+                    const newPassword = document.getElementById('new-password').value;
+                    
+                    btn.disabled = true;
+                    btn.textContent = 'Processing...';
+                    
+                    if (enteredCode == this.code) {
+                        this.showStatus('Password reset successful!', 'status-success');
+                        setTimeout(() => {
+                            document.getElementById('password-reset-modal').style.display = 'none';
+                            document.getElementById('reset-step1').style.display = 'block';
+                            document.getElementById('reset-step2').style.display = 'none';
+                            e.target.reset();
+                            document.getElementById('reset-request-form').reset();
+                            btn.disabled = false;
+                            btn.textContent = 'Reset Password';
+                        }, 2000);
+                    } else {
+                        this.showStatus('Invalid verification code. Please try again.', 'status-error');
+                        btn.disabled = false;
+                        btn.textContent = 'Reset Password';
+                    }
                 });
-                
-                document.getElementById('reset-step1').style.display = 'none';
-                document.getElementById('reset-step2').style.display = 'block';
-                showStatus('Code sent successfully!', 'status-success');
-            } catch (error) {
-                showStatus(`Error: ${error.message}`, 'status-error');
-            } finally {
-                btn.disabled = false;
-                btn.textContent = 'Send Code';
-            }
-        });
-        
-        document.getElementById('reset-confirm-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('button[type="submit"]');
-            const enteredCode = document.getElementById('reset-code').value;
+            },
             
-            if (enteredCode == this.code) {
-                showStatus('Password reset successful!', 'status-success');
+            showStatus(message, type) {
+                const statusEl = document.getElementById('reset-status');
+                statusEl.textContent = message;
+                statusEl.className = type;
+                statusEl.style.display = 'block';
                 setTimeout(() => {
-                    document.getElementById('password-reset-modal').style.display = 'none';
-                    // Reset forms
-                    document.getElementById('reset-step1').style.display = 'block';
-                    document.getElementById('reset-step2').style.display = 'none';
-                    e.target.reset();
-                    document.getElementById('reset-request-form').reset();
-                }, 2000);
-            } else {
-                showStatus('Invalid verification code', 'status-error');
+                    statusEl.style.display = 'none';
+                }, 5000);
             }
-        });
-        
-        function showStatus(message, type) {
-            const statusEl = document.getElementById('reset-status');
-            statusEl.textContent = message;
-            statusEl.className = type;
-            statusEl.style.display = 'block';
-        }
-    }
-};
+        };
 
-// Initialize when page loads
-document.addEventListener('DOMContentLoaded', () => passwordReset.init());
-});
-
-        // Forgot Password Link
-        forgotPasswordLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            passwordResetModal.style.display = 'block';
-        });
-
-        // Reset Request Form
-        document.getElementById('reset-request-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            resetEmail = document.getElementById('reset-email').value;
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            passwordReset.init();
             
-            // Generate and send code
-            resetVerificationCode = Math.floor(100000 + Math.random() * 900000);
-            
-            try {
-                await emailjs.send('service_j3r9dle', 'template_default', {
-                    to_email: resetEmail,
-                    verification_code: resetVerificationCode,
-                    user_name: 'Valued Customer',
-                    from_name: "FreshMart Team",
-                    message: 'Your password reset code is:'
+            // Close modals
+            document.querySelectorAll('.close-modal').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.closest('.modal').style.display = 'none';
                 });
-                
-                document.getElementById('reset-step1').style.display = 'none';
-                document.getElementById('reset-step2').style.display = 'block';
-                showResetStatus('Verification code sent!', 'success');
-            } catch (error) {
-                showResetStatus('Error sending email: ' + error.message, 'error');
-            }
-        });
-
-        // Reset Confirm Form
-        document.getElementById('reset-confirm-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const enteredCode = document.getElementById('reset-code').value;
-            const newPassword = document.getElementById('new-password').value;
+            });
             
-            if (enteredCode == resetVerificationCode) {
-                // In a real app, you would save the new password to your database here
-                showResetStatus('Password reset successful! You can now login with your new password.', 'success');
-                
-                // Close modal after 3 seconds
-                setTimeout(() => {
-                    passwordResetModal.style.display = 'none';
-                    document.getElementById('reset-step1').style.display = 'block';
-                    document.getElementById('reset-step2').style.display = 'none';
-                    document.getElementById('reset-request-form').reset();
-                    document.getElementById('reset-confirm-form').reset();
-                }, 3000);
-            } else {
-                showResetStatus('Invalid verification code', 'error');
-            }
-        });
-
-        // Helper functions
-        function showStatus(message, type) {
-            statusMessage.textContent = message;
-            statusMessage.className = type;
-            statusMessage.style.display = 'block';
-        }
-
-        function showModalStatus(message, type) {
-            modalStatus.textContent = message;
-            modalStatus.className = type;
-            modalStatus.style.display = 'block';
-        }
-
-        function showResetStatus(message, type) {
-            const statusElement = document.getElementById('reset-status');
-            statusElement.textContent = message;
-            statusElement.className = type;
-            statusElement.style.display = 'block';
-        }
-
-        // Close modal when clicking outside
-        window.addEventListener('click', function(event) {
-            if (event.target.classList.contains('modal')) {
-                event.target.style.display = 'none';
-            }
-        });
-
-        // Simple login form handler
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target.classList.contains('modal')) {
+                    event.target.style.display = 'none';
+                }
+            });
             
-            // In a real app, you would validate credentials with your backend
-            alert('Login functionality would validate credentials with server in a real app');
+            // Toggle between login and signup forms
+            document.getElementById('show-signup').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('login-form').style.display = 'none';
+                document.getElementById('signup-form').style.display = 'block';
+            });
+
+            document.getElementById('show-login').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('signup-form').style.display = 'none';
+                document.getElementById('login-form').style.display = 'block';
+            });
+            
+            // Simple login form handler
+            document.getElementById('login-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+                console.log("Login attempt with:", email, password);
+                // In a real app, validate credentials with your backend
+            });
         });
     </script>
 </body>
