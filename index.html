@@ -511,19 +511,78 @@ emailjs.send("service_j3r9dle", "template_default", {
         });
 
         // Password Reset Variables
-        let resetVerificationCode = null;
-        let resetEmail = null;
-        // Add this with your other password reset variables
-const emailjsServiceID = "service_j3r9dle"; // ② Confirm this matches your EmailJS service ID
-const emailjsTemplateID = "template_default"; // ③ Confirm this matches your template name
+        // Password Reset - Complete Working Version
+const passwordReset = {
+    init() {
+        this.code = null;
+        this.email = null;
+        this.serviceID = "service_j3r9dle"; // Replace with yours
+        this.templateID = "template_default"; // Replace with yours
+        
+        document.getElementById('forgot-password').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('password-reset-modal').style.display = 'block';
+        });
+        
+        document.getElementById('reset-request-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            
+            try {
+                btn.disabled = true;
+                btn.textContent = 'Sending...';
+                this.email = document.getElementById('reset-email').value;
+                this.code = Math.floor(100000 + Math.random() * 900000);
+                
+                await emailjs.send(this.serviceID, this.templateID, {
+                    to_email: this.email,
+                    verification_code: this.code,
+                    subject: "Password Reset Verification",
+                    body: `Your verification code is: ${this.code}`
+                });
+                
+                document.getElementById('reset-step1').style.display = 'none';
+                document.getElementById('reset-step2').style.display = 'block';
+                showStatus('Code sent successfully!', 'status-success');
+            } catch (error) {
+                showStatus(`Error: ${error.message}`, 'status-error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Send Code';
+            }
+        });
+        
+        document.getElementById('reset-confirm-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const enteredCode = document.getElementById('reset-code').value;
+            
+            if (enteredCode == this.code) {
+                showStatus('Password reset successful!', 'status-success');
+                setTimeout(() => {
+                    document.getElementById('password-reset-modal').style.display = 'none';
+                    // Reset forms
+                    document.getElementById('reset-step1').style.display = 'block';
+                    document.getElementById('reset-step2').style.display = 'none';
+                    e.target.reset();
+                    document.getElementById('reset-request-form').reset();
+                }, 2000);
+            } else {
+                showStatus('Invalid verification code', 'status-error');
+            }
+        });
+        
+        function showStatus(message, type) {
+            const statusEl = document.getElementById('reset-status');
+            statusEl.textContent = message;
+            statusEl.className = type;
+            statusEl.style.display = 'block';
+        }
+    }
+};
 
-// Then modify your email sending code to use these variables:
-await emailjs.send(emailjsServiceID, emailjsTemplateID, {
-    to_email: resetEmail,
-    verification_code: resetVerificationCode,
-    user_name: 'Valued Customer',
-    from_name: "FreshMart Team",
-    message: 'Your password reset code is:'
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', () => passwordReset.init());
 });
 
         // Forgot Password Link
