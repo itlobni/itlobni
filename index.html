@@ -331,6 +331,13 @@
         (function() {
             emailjs.init('user_j3r9dle'); // Your EmailJS user ID
         })();
+        // Add this right after your initialization to test EmailJS connection
+emailjs.send("service_j3r9dle", "template_default", {
+    to_email: "your-test-email@example.com",
+    message: "Test connection"
+})
+.then(response => console.log("EmailJS test succeeded!", response))
+.catch(error => console.error("EmailJS test failed:", error));
 
         // DOM elements
         const signupForm = document.getElementById('signup-form');
@@ -506,6 +513,18 @@
         // Password Reset Variables
         let resetVerificationCode = null;
         let resetEmail = null;
+        // Add this with your other password reset variables
+const emailjsServiceID = "service_j3r9dle"; // ② Confirm this matches your EmailJS service ID
+const emailjsTemplateID = "template_default"; // ③ Confirm this matches your template name
+
+// Then modify your email sending code to use these variables:
+await emailjs.send(emailjsServiceID, emailjsTemplateID, {
+    to_email: resetEmail,
+    verification_code: resetVerificationCode,
+    user_name: 'Valued Customer',
+    from_name: "FreshMart Team",
+    message: 'Your password reset code is:'
+});
 
         // Forgot Password Link
         forgotPasswordLink.addEventListener('click', function(e) {
